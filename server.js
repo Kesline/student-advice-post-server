@@ -38,7 +38,8 @@ const Question = mongoose.model('Question', new mongoose.Schema({
 
 // Middleware for token verification
 const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
+  const token = req.headers['authorization']?.split(' ')[0];
+  console.log("token", token)
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -102,8 +103,8 @@ app.delete('/api/posts/:id', authenticateToken, async (req, res) => {
     if (post.author !== req.user.email) {
       return res.status(403).json({ error: 'You are not authorized to delete this post' });
     }
-    await post.remove();
-    res.status(204).send();
+    await post.deleteOne();
+    res.status(204).send({ message: 'Deleted' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
