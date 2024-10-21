@@ -143,8 +143,8 @@ app.delete('/api/questions/:id', authenticateToken, async (req, res) => {
     if (question.author !== req.user.email) {
       return res.status(403).json({ error: 'You are not authorized to delete this question' });
     }
-    await question.remove();
-    res.status(204).send();
+    await question.deleteOne();
+    res.status(204).send({message : 'Successfully Deleted'});
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
